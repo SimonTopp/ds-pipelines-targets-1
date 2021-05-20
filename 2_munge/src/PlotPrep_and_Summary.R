@@ -8,13 +8,9 @@ library(whisker)
 library(readr)
 
 ## Function for plotting the data and comparing models
-munge_data <- function(fileIn, project_output_dir, name){
+munge_data <- function(file_in){
   
-  if(dir.exists(project_output_dir) == F){
-    dir.create(project_output_dir)
-  }
-  
-  evals <- readr::read_csv(fileIn, col_types = 'iccd') %>%
+  readr::read_csv(file_in, col_types = 'iccd') %>%
     filter(str_detect(exper_id, 'similar_[0-9]+')) %>%
     mutate(col = case_when(
       model_type == 'pb' ~ '#1b9e77',
@@ -25,17 +21,13 @@ munge_data <- function(fileIn, project_output_dir, name){
       model_type == 'dl' ~ 22,
       model_type == 'pgdl' ~ 23
     ), n_prof = as.numeric(str_extract(exper_id, '[0-9]+')))
-  
-  readr::write_csv(evals, file = file.path(project_output_dir, name))
-  print(paste0("Munged eval data has been saved to ", file.path(project_output_dir, name)))
-  return(evals)
 }
 
 evals <- munge_data("1_fetch/out/me_RMSE.csv", '2_munge/out', 'model_summary_results.csv')
 
 ## Summary text output
 
-summaryOut <- function(eval_data, project_output_dir, name){
+summaryOut <- function(eval_data, project_output_dir, file_name){
   render_data <- list(pgdl_980mean = filter(eval_data, model_type == 'pgdl', exper_id == "similar_980") %>% pull(rmse) %>% mean %>% round(2),
                       dl_980mean = filter(eval_data, model_type == 'dl', exper_id == "similar_980") %>% pull(rmse) %>% mean %>% round(2),
                       pb_980mean = filter(eval_data, model_type == 'pb', exper_id == "similar_980") %>% pull(rmse) %>% mean %>% round(2),
@@ -52,8 +44,7 @@ summaryOut <- function(eval_data, project_output_dir, name){
     The PGDL prediction accuracy was more robust compared to PB when only two profiles were provided for training ({{pgdl_2mean}} and {{pb_2mean}}°C, respectively).'
   
   text <- whisker.render(template_1 %>% str_remove_all('\n') %>% str_replace_all('  ', ' '), render_data) 
-  cat(text, file = file.path(project_output_dir, name))
-  print(paste0("The following summary has been saved to ",file.path(project_output_dir, name),":  ",text))
+  cat(text, file = file.path(project_output_dir, file_name))
   }  
   
 summaryOut(evals, '2_munge/out', 'model_diagnostic_text.txt')

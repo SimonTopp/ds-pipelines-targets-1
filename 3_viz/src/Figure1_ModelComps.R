@@ -1,17 +1,13 @@
 #### This script plots up our evaluation data for Figure 1.
 library(dplyr)
-library(readr)
-library(stringr)
-library(sbtools)
-library(whisker)
 
-plot_data <- function(eval_data, project_output_dir, name){
+plot_data <- function(eval_data, munge_dir, file_name){
   
-  if(dir.exists(project_output_dir) == F){
-    dir.create(project_output_dir)
+  if(dir.exists(munge_dir) == F){
+    dir.create(munge_dir)
   }
   
-  png(file = file.path(project_output_dir, name), width = 8, height = 10, res = 200, units = 'in')
+  png(file = file.path(munge_dir, file_name), width = 8, height = 10, res = 200, units = 'in')
   par(omi = c(0,0,0.05,0.05), mai = c(1,1,0,0), las = 1, mgp = c(2,.5,0), cex = 1.5)
   
   plot(NA, NA, xlim = c(2, 1000), ylim = c(4.7, 0.75),
@@ -53,7 +49,6 @@ plot_data <- function(eval_data, project_output_dir, name){
   text(2.3, 1.1, 'Process-Based', pos = 4, cex = 1.1)
   
   dev.off()
-  print(paste0("Figure 1 has been saved to ", file.path(project_output_dir, name)))
 }
 
 evals <- read_csv('2_munge/out/model_summary_results.csv')
