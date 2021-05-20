@@ -14,7 +14,7 @@ list(
   ),
   tar_target(
     figure_1_png,
-    make_plot(out_filepath = "figure_1.png", data = plot_data), 
+    make_plot(plot_data, "3_viz/out", 'figure_1.png'), 
     format = "file"
   )
 )
