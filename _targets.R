@@ -1,11 +1,11 @@
 library(targets)
-source("code.R")
+source("functions.R")
 tar_option_set(packages = c("tidyverse", "stringr", "sbtools", "whisker"))
 
 list(
   tar_target(
     model_RMSEs_csv,
-    download_data(out_filepath = "model_RMSEs.csv"),
+    download_data('5d925066e4b0c4f70d0d0599', fetch_dir = '1_fetch/out', file_name = 'models_RMSE.csv'),
     format = "file"
   ), 
   tar_target(
