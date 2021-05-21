@@ -3,12 +3,12 @@
 ## Function for pulling down data from 
 ## USGS's ScienceBase https://www.sciencebase.gov/
 download_data <- function(dataID, fetch_dir, file_name){
-  if(dir.exists(fetch_dir) == F){
+  if(!dir.exists(fetch_dir)){
     dir.create(fetch_dir)
   }
   
   path <- file.path(fetch_dir, file_name)
-  item_file_download('5d925066e4b0c4f70d0d0599', 
+  item_file_download(dataID, 
                      names = "me_RMSE.csv", 
                      destinations = path, 
                      overwrite_file = TRUE)
@@ -34,7 +34,7 @@ process_data <- function(in_filepath){
 ## Make Figure 1 of model comparisons
 make_plot <- function(eval_data, munge_dir, file_name){
   
-  if(dir.exists(munge_dir) == F){
+  if(!dir.exists(munge_dir)){
     dir.create(munge_dir)
   }
   
